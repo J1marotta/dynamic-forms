@@ -1,0 +1,23 @@
+{
+  "name": "forms",
+  "version": "0.0.1",
+  "description": "Controlled vs uncontrolled",
+  "main": "App.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/J1marotta/dynamic-forms.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/J1marotta/dynamic-forms/issues"
+  },
+  "homepage": "https://github.com/J1marotta/dynamic-forms#readme",
+  "dependencies": {
+    "ramda": "^0.26.1",
+    "react": "^16.8.6"
+  }
+}
