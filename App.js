@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import * as R from 'ramda'
 
+const { useState, useEffect } = React
 
-const formHandler = callback => {
-  const [values, setValues] = useState({})
+const useFormHandler = (initialState, callback) => {
+  const [values, setValues] = useState(initialState)
 
   const handleSubmit = e => {
     if (e) e.preventDefault()
-    callback()
+    callback(values)
   }
-  const handleChange = e => {
-    setValues(values => ({...values, [e.target.name]: e.target.value }))
+
+  const handleChange = ({ target: { name, value }}) => {
+    setValues(values => ({...values, [name]: value }))
   }
     
     return {
@@ -18,9 +20,9 @@ const formHandler = callback => {
       handleSubmit,
       values,
       setValues,
-    }
-    
+    } 
 }
+
 const labelStyle = 
   {
     marginTop: '10px'
@@ -86,19 +88,31 @@ const getCompulsoryKeys =
     }[key]),
     R.F
   )
+
+
+const convertGender = number => 
+  ({
+    1: () => ['male']
+  , 2: () => ['female']
+  }
+  [number]())
+.concat('other')
+.shift()
   
-const generateTextInput = (name, handleChange,values) =>
+  
+  
+const generateTextInput = (name, handleChange, values, fn ) => 
       <input 
         type={'text'}
         name={name}
         required
         onChange={handleChange}
-        value={values[name]}
+        value={fn(values[name])}
         />
   
 const generateInput = (k,handleChange,values) => ({
   name: () => (
-     generateTextInput('name',handleChange,values)
+     generateTextInput('name', handleChange, values, x => x)
   ),
   dob: () => (
       <input 
@@ -111,7 +125,7 @@ const generateInput = (k,handleChange,values) => ({
         />
     ),
   gender: () => (
-        generateTextInput('gender',handleChange,values)
+        generateTextInput('gender',handleChange,values, convertGender )
     ) 
 }[k]())
 
@@ -119,15 +133,11 @@ const generateInput = (k,handleChange,values) => ({
 
 
 
-
 const App = ({ data }) =>  {
-  const { values , handleChange, handleSubmit } = formHandler(results)
-  const results = () => console.log(values)
-
-
+  const results = values => console.log(values)
+  const { values , handleChange, handleSubmit } = useFormHandler(json, results)
  
-  
- return (
+  return (
   <div key={data} style={wrapper}>
      <form style={formStyle} onSubmit={handleSubmit}>
         {Object.entries(data).map( ([k,v]) => 
@@ -144,7 +154,7 @@ const App = ({ data }) =>  {
       <button type="submit" >Submit</button>
     </form>
   </div>
-)
+  )
 }
 
 ReactDOM.render(
